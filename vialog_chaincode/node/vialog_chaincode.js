@@ -74,9 +74,6 @@ var Chaincode = class {
 
     let video = JSON.parse(Avalbytes.toString());
 
-    
-
-
     console.info('Query Response:');
     console.info(video);
     return video;
