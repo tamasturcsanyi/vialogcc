@@ -36,18 +36,24 @@ var Chaincode = class {
   }
 
   async addVideo(stub, args) {
-    if (args.length != 3) {
-      throw new Error('Incorrect number of arguments. Expecting 3');
+    if (args.length != 6) {
+      throw new Error('Incorrect number of arguments. Expecting 6');
     }
 
     let id = args[0];
     let created = args[1];
     let state = args[2];
+    let threadid = args[3];
+    let hash = args[4];
+    let source = args[5];
 
     let video = {
       Id: id,
       Created: created,
-      State: state
+      State: state,
+      ThreadId: threadid,
+      Hash: hash,
+      Source: source
     };
 
     let buffer = Buffer.from(JSON.stringify(video));
