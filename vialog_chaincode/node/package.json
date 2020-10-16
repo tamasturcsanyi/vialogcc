@@ -1,7 +1,7 @@
 {
 	"name": "vialog_chaincode",
 	"version": "1.0.0",
-	"description": "vialog_chaincode chaincode implemented in node.js",
+	"description": "vialog_chaincode implemented in node.js",
 	"engines": {
 		"node": ">=8.4.0",
 		"npm": ">=5.3.0"
