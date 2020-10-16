@@ -5,7 +5,6 @@
 */
 
 const shim = require('fabric-shim');
-const util = require('util');
 const { Video } = require('./videoModeration');
 
 let video = new Video();
@@ -39,13 +38,13 @@ var Chaincode = class {
 
   async addVideoEvent(stub, args) {
     if (args.length != 16) {
-      throw new Error('Incorrect number of arguments. Expecting 6');
+      throw new Error('Incorrect number of arguments. Expecting 16');
     }
 
     let [videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
 
     let video = await video.created(videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
-    let id = video.getStateId(video.videoId);
+    let id = video.getStateId(videoId);
 
     let buffer = Buffer.from(JSON.stringify(video));
     await stub.putState(id, buffer);
@@ -74,14 +73,15 @@ var Chaincode = class {
 
       videos.push(item);
     } else if (args.length == 2) {
-      let jsonResp = {};
       let startId = args[0];
       let endId = args[1];
 
       // Get the state from the ledger
       let iter = await stub.getStateByRange(startId, endId);
-      let results = await this.getAllResults(stub, iter);
-      let video = JSON.parse(Avalbytes.toString());
+      videos = await this.getAllResults(stub, iter);
+    } else {
+      let iter = await stub.getStateByRange("", "");
+      videos = await this.getAllResults(stub, iter);
     }
 
     console.info('Query Response:');
@@ -118,7 +118,7 @@ var Chaincode = class {
     }
   }
 
-  async getHistoryForId(id) {
+  async getHistoryForId(stub, id) {
     let videoHistory = {};
     let historyIter = stub.GetHistoryForKey(id);
     while(true) {

@@ -9,4 +9,4 @@ export CORE_PEER_MSPCONFIGPATH=$CORE_PEER_MSPCONFIGPATH
 export CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_ROOTCERT_FILE
 
 
-peer chaincode instantiate -C appchannel -n vialog_video_eventcc2 -v 1.0 -c '{"Args":["init"]}' -o ${ORDERER_HOST}:7050 --tls --cafile ${CORE_PEER_TLS_ROOTCERT_FILE}
+peer chaincode instantiate -C appchannel -n vialog_dev_cc -v 1.0 -c '{"Args":["init"]}' -o ${ORDERER_HOST}:7050 --tls --cafile ${CORE_PEER_TLS_ROOTCERT_FILE}
