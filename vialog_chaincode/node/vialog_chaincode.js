@@ -8,15 +8,19 @@ const shim = require('fabric-shim');
 const { Video } = require('./videoModeration');
 
 let video = new Video();
+let mycc;
 
-var Chaincode = class {
+class Chaincode {
 
   // Initialize the chaincode
   async Init(stub) {
-    let ret = stub.getFunctionAndParameters();
-    console.info(ret);
-    console.info('=========== Vialog Chaincode ===========');
-    return shim.success();
+    mycc = new Chaincode();
+
+    try {
+        return shim.success();
+    } catch (e) {
+        return shim.error(e);
+    }
   }
 
   async Invoke(stub) {
@@ -43,10 +47,10 @@ var Chaincode = class {
 
     let [videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
 
-    let video = await video.created(videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
+    let newVideo = await video.created(videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
     let id = video.getStateId(videoId);
 
-    let buffer = Buffer.from(JSON.stringify(video));
+    let buffer = Buffer.from(JSON.stringify(newVideo));
     await stub.putState(id, buffer);
 
     return buffer;
@@ -60,7 +64,7 @@ var Chaincode = class {
       let id = args[0];
 
       // Get the state from the ledger
-      let Avalbytes = await this.getHistoryForId('video'+ id);
+      let Avalbytes = await mycc.getHistoryForId('video'+ id);
       if (!Avalbytes) {
         jsonResp.error = 'Failed to get state for ' + id;
         throw new Error(JSON.stringify(jsonResp));
@@ -78,10 +82,10 @@ var Chaincode = class {
 
       // Get the state from the ledger
       let iter = await stub.getStateByRange(startId, endId);
-      videos = await this.getAllResults(stub, iter);
+      videos = await mycc.getAllResults(stub, iter);
     } else {
       let iter = await stub.getStateByRange("", "");
-      videos = await this.getAllResults(stub, iter);
+      videos = await mycc.getAllResults(stub, iter);
     }
 
     console.info('Query Response:');
@@ -102,7 +106,7 @@ var Chaincode = class {
       if (res && res.value) {
           
           let id = video.getStateId(res.value.videoId);
-          let history = await this.getHistoryForId(stub, id)
+          let history = await mycc.getHistoryForId(stub, id)
 
           let item = {
             VideoId: res.value.videoId,
