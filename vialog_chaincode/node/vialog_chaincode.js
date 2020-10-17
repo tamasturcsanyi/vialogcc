@@ -44,12 +44,14 @@ class Chaincode {
     if (args.length != 17) {
       throw new Error('Incorrect number of arguments. Expecting 16');
     }
-
+    console.log("AddVideoEvent Called");
     let [videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
-
+    console.log("VideoId");
+    console.log(videoId);
     let newVideo = await video.create(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
     let id = video.getStateId(videoId);
-
+    console.log(id);
+    console.log(newVideo);
     let buffer = Buffer.from(JSON.stringify(newVideo));
     await stub.putState(id, buffer);
 
