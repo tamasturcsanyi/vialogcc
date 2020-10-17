@@ -47,7 +47,7 @@ class Chaincode {
 
     let [videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
 
-    let newVideo = await video.created(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
+    let newVideo = await video.create(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
     let id = video.getStateId(videoId);
 
     let buffer = Buffer.from(JSON.stringify(newVideo));
