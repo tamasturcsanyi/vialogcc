@@ -41,13 +41,13 @@ class Chaincode {
   }
 
   async addVideoEvent(stub, args) {
-    if (args.length != 16) {
+    if (args.length != 17) {
       throw new Error('Incorrect number of arguments. Expecting 16');
     }
 
-    let [videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
+    let [videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
 
-    let newVideo = await video.created(videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
+    let newVideo = await video.created(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
     let id = video.getStateId(videoId);
 
     let buffer = Buffer.from(JSON.stringify(newVideo));

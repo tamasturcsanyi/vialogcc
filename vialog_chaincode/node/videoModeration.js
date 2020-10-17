@@ -3,6 +3,7 @@
 let video = {
     videoId: Number,
     objType: String,
+    eventName: String,
     video_token: String,
     replyTo: Number,
     created: Date,
@@ -23,9 +24,10 @@ let video = {
 
 class Video {
 
-    async create(videoId, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type) {
+    async create(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type) {
         
         video.objType = 'video';
+        video.eventName = eventName;
         video.videoId = videoId;
         video.video_token = video_token;
         video.replyTo = replyTo;
