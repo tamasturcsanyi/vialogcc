@@ -49,7 +49,7 @@ class Video {
     }
 
     async getStateId(type,id) {
-        return type + id.toString();
+        return type + id;
     }
 }
 

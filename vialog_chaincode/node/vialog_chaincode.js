@@ -49,7 +49,7 @@ class Chaincode {
     console.log("VideoId");
     console.log(videoId);
     let newVideo = await video.create(type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
-    let id = video.getStateId(newVideo.objType,newVideo.videoId);
+    let id = video.getStateId(type,videoId);
     console.log("Before ID");
     console.log(id);
     console.log(typeof id);
