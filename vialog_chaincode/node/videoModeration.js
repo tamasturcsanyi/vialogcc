@@ -47,10 +47,6 @@ class Video {
 
         return video;
     }
-
-    async getStateId(type,id) {
-        return type + id;
-    }
 }
 
 module.exports = {

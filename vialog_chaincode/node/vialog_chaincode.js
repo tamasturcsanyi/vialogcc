@@ -49,7 +49,7 @@ class Chaincode {
     console.log("VideoId");
     console.log(videoId);
     let newVideo = await video.create(type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
-    let id = video.getStateId(type,videoId);
+    let id = mycc.getStateId(type,videoId);
     console.log("Before ID");
     console.log(id);
     console.log(typeof id);
@@ -69,7 +69,7 @@ class Chaincode {
     console.log("Args: ",args); 
 
     if (args.length == 2) {      
-      let id = mycc.getKey(args[0],args[1]);
+      let id = mycc.getStateId(args[0],args[1]);
 
       console.log("Single Id: ", id);
       console.log("Id type: ", typeof id); 
@@ -93,9 +93,9 @@ class Chaincode {
       videos.push(item);
     } else if (args.length == 3) {
       let type = args[0];
-      let startId = mycc.getKey(type,args[1]);
+      let startId = mycc.getStateId(type,args[1]);
       console.log("Start Id: ", startId);
-      let endId = mycc.getKey(type,args[2]);
+      let endId = mycc.getStateId(type,args[2]);
       console.log("End Id: ", endId);
 
       // Get the state from the ledger
@@ -125,7 +125,7 @@ class Chaincode {
       if (res && res.value) {
           
         if (type == 'video') {
-          let id = mycc.getKey(type,res.value.videoId);
+          let id = mycc.getStateId(type,res.value.videoId);
           let history = await mycc.getHistoryForId(stub, id)
 
           let item = {
@@ -167,8 +167,8 @@ class Chaincode {
     return videoHistory;
   }
 
-  async getKey(type, objId) {
-    return type + objId;
+  getStateId(type,id) {
+    return type + id;
   }
 
 };
