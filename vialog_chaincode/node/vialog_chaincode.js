@@ -149,7 +149,7 @@ class Chaincode {
   async getHistoryForId(stub, id) {
     let videoHistory = {};
     console.log("getHistoryForId Called.");
-    let historyIter = stub.GetHistoryForKey(id);
+    let historyIter = await stub.GetHistoryForKey(id);
     while(true) {
       let videoHistoryItem = await historyIter.next();
       if (videoHistoryItem && videoHistoryItem.value) {
