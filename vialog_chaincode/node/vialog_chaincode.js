@@ -49,8 +49,11 @@ class Chaincode {
     console.log("VideoId");
     console.log(videoId);
     let newVideo = await video.create(type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
-    let id = mycc.getKey(type,videoId);
+    let id = newVideo.getStateId();
+    console.log("Before ID");
     console.log(id);
+    console.log(typeof id);
+    console.log("After ID");
     console.log(newVideo);
     let buffer = Buffer.from(JSON.stringify(newVideo));
     await stub.putState(id, buffer);
@@ -68,7 +71,8 @@ class Chaincode {
     if (args.length == 2) {      
       let id = mycc.getKey(args[0],args[1]);
 
-      console.log("Single Id: ", id); 
+      console.log("Single Id: ", id);
+      console.log("Id type: ", typeof id); 
 
       // Get the state from the ledger
       let Avalbytes = await mycc.getHistoryForId(id);

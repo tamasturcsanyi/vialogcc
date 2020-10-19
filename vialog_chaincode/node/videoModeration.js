@@ -48,8 +48,8 @@ class Video {
         return video;
     }
 
-    async getStateId(id) {
-        return 'video' + id;
+    async getStateId() {
+        return video.objType + video.videoId;
     }
 }
 
