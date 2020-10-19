@@ -3,7 +3,7 @@ set -x #echo on
 
 CHAINCODE_NAME="vialog_dev_cc"
 CHANNEL_NAME="appchannel"
-QUERY_PARAMS='{"Args":["query","1"]}'
+QUERY_PARAMS='{"Args":["query","video","1"]}'
 
 export PEER_HOST=peer2
 export CORE_PEER_ADDRESS=${PEER_HOST}:7051

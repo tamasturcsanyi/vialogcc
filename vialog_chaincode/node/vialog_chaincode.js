@@ -41,15 +41,15 @@ class Chaincode {
   }
 
   async addVideoEvent(stub, args) {
-    if (args.length != 17) {
-      throw new Error('Incorrect number of arguments. Expecting 16');
+    if (args.length != 18) {
+      throw new Error('Incorrect number of arguments. Expecting 17');
     }
     console.log("AddVideoEvent Called");
-    let [videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
+    let [type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type] = args;
     console.log("VideoId");
     console.log(videoId);
-    let newVideo = await video.create(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
-    let id = video.getStateId(videoId);
+    let newVideo = await video.create(type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
+    let id = mycc.getKey(type,videoId);
     console.log(id);
     console.log(newVideo);
     let buffer = Buffer.from(JSON.stringify(newVideo));
@@ -62,36 +62,49 @@ class Chaincode {
   async query(stub, args) {
     let videos = [];
     let jsonResp = {};
-    if (args.length == 1) {      
-      let id = args[0];
+
+    console.log("Args: ",args); 
+
+    if (args.length == 2) {      
+      let id = mycc.getKey(args[0],args[1]);
+
+      console.log("Single Id: ", id); 
 
       // Get the state from the ledger
-      let Avalbytes = await mycc.getHistoryForId('video'+ id);
+      let Avalbytes = await mycc.getHistoryForId(id);
       if (!Avalbytes) {
         jsonResp.error = 'Failed to get state for ' + id;
         throw new Error(JSON.stringify(jsonResp));
       }
+      
+      console.log(Avalbytes);
 
       let item = {
         VideoId: Avalbytes.value.videoId,
         History: JSON.parse(Avalbytes.toString())
       };
 
+      console.log("Item: ", item); 
+
       videos.push(item);
-    } else if (args.length == 2) {
-      let startId = args[0];
-      let endId = args[1];
+    } else if (args.length == 3) {
+      let type = args[0];
+      let startId = mycc.getKey(type,args[1]);
+      console.log("Start Id: ", startId);
+      let endId = mycc.getKey(type,args[2]);
+      console.log("End Id: ", endId);
 
       // Get the state from the ledger
-      let iter = await stub.getStateByRange(startId, endId);
-      videos = await mycc.getAllResults(stub, iter);
+      let iter = await stub.getStateByRange(startId,endId);
+      videos = await mycc.getAllResults(stub, iter, type);
     } else {
-      let iter = await stub.getStateByRange("", "");
-      videos = await mycc.getAllResults(stub, iter);
+      let type = args[0];
+      let iter = await stub.getStateByPartialCompositeKey(type, null);
+      videos = await mycc.getAllResults(stub, iter, type);
     }
 
-    console.info('Query Response:');
-    console.info(videos);
+    console.log('Query Response:');
+    console.log(videos);
     return videos;
   }
 
@@ -100,25 +113,30 @@ class Chaincode {
     return (!!buffer && buffer.length > 0);
   }
 
-  async getAllResults(stub, iterator) {
+  async getAllResults(stub, iterator, type) {
     let allResults = [];
-
+    console.log("getAllResults Called.");
     while (true) {
       let res = await iterator.next();
       if (res && res.value) {
           
-          let id = video.getStateId(res.value.videoId);
+        if (type == 'video') {
+          let id = mycc.getKey(type,res.value.videoId);
           let history = await mycc.getHistoryForId(stub, id)
 
           let item = {
             VideoId: res.value.videoId,
-            History: videoHistory
+            History: history
           };
 
+          console.log(item);
           allResults.push(item);
+        }
       }
       if (res.done) {
           await iterator.close();
+          console.log("getAllResults Ended.");
+          console.log(allResults);
           return allResults;
       }
     }
@@ -126,6 +144,7 @@ class Chaincode {
 
   async getHistoryForId(stub, id) {
     let videoHistory = {};
+    console.log("getHistoryForId Called.");
     let historyIter = stub.GetHistoryForKey(id);
     while(true) {
       let videoHistoryItem = await historyIter.next();
@@ -138,7 +157,14 @@ class Chaincode {
       }
     }
 
+    console.log("getHistoryForId Ended.");
+    console.log(videoHistory);
+    
     return videoHistory;
+  }
+
+  async getKey(type, objId) {
+    return type + objId;
   }
 
 };

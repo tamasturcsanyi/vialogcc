@@ -24,9 +24,9 @@ let video = {
 
 class Video {
 
-    async create(videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type) {
+    async create(type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type) {
         
-        video.objType = 'video';
+        video.objType = type;
         video.eventName = eventName;
         video.videoId = videoId;
         video.video_token = video_token;
