@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 */
+'use strict';
 
 const shim = require('fabric-shim');
 const { Video } = require('./videoModeration');
@@ -75,7 +76,7 @@ class Chaincode {
       console.log("Id type: ", typeof id); 
 
       // Get the state from the ledger
-      let Avalbytes = await mycc.getHistoryForId(id);
+      let Avalbytes = await mycc.getHistoryForId(stub,id);
       if (!Avalbytes) {
         jsonResp.error = 'Failed to get state for ' + id;
         throw new Error(JSON.stringify(jsonResp));
