@@ -100,8 +100,9 @@ class Chaincode {
       let type = args[0];
       let queryString = {};
         queryString.selector = {};
-        queryString.selector.docType = type;
-      let iter = await stub.getQueryResult( JSON.stringify(queryString));
+        queryString.selector.objType = type;
+      console.log(queryString);
+      let iter = await stub.getQueryResult(JSON.stringify(queryString));
       videos = await mycc.getAllResults(stub, iter, type);
     }
 
