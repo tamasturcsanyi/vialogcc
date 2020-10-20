@@ -127,7 +127,7 @@ class Chaincode {
       if (res && res.value) {
           
         if (type == 'video') {
-          let id = mycc.getStateId(type,res.value.value.videoId);
+          let id = mycc.getStateId(type,JSON.parse(res.value.value.toString('utf8')).videoId);
           console.log("Id: ", id);
           let history = await mycc.getHistoryForId(stub, id);
 
