@@ -65,8 +65,6 @@ class Chaincode {
   // query callback representing the query of a chaincode
   async query(stub, args) {
     let videos = [];
-    let jsonResp = {};
-
     console.log("Args: ",args); 
 
     if (args.length == 2) {      
@@ -76,17 +74,12 @@ class Chaincode {
       console.log("Id type: ", typeof id); 
 
       // Get the state from the ledger
-      let Avalbytes = await mycc.getHistoryForId(stub,id);
-      if (!Avalbytes) {
-        jsonResp.error = 'Failed to get state for ' + id;
-        throw new Error(JSON.stringify(jsonResp));
-      }
-      
-      console.log(Avalbytes);
+      let history = await mycc.getHistoryForId(stub,id);      
+      console.log(history);
 
       let item = {
-        VideoId: Avalbytes.value.videoId,
-        History: JSON.parse(Avalbytes.toString())
+        VideoId: history[0].videoId,
+        History: history
       };
 
       console.log("Item: ", item); 
