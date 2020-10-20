@@ -2,7 +2,7 @@
 set -x #echo on
 
 CHAINCODE_NAME="vialog_dev_cc"
-CHAINCODE_VERSION="1.13"
+CHAINCODE_VERSION="1.14"
 INSTANTIATE_PARAMS='{"Args":["init"]}'
 CHANNEL_NAME="appchannel"
 CHAINCODE_SRC_CODE_PATH="/root/CLI/vialogcc/vialog_chaincode/node"
