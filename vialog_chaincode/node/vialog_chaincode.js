@@ -156,10 +156,11 @@ class Chaincode {
       let videoHistoryItem = await historyIter.next();
       if (videoHistoryItem && videoHistoryItem.value) {
         console.log("HistoryItem: ", videoHistoryItem.value);
-        videoHistory.push(videoHistoryItem.value);
+        videoHistory.push(JSON.parse(videoHistoryItem.value.value.toString('utf8')));
       }
 
       if (videoHistoryItem.done) {
+        console.log("End of loop");
         break;
       }
     }
