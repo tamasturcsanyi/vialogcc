@@ -98,8 +98,10 @@ class Chaincode {
       videos = await mycc.getAllResults(stub, iter, type);
     } else {
       let type = args[0];
-      var selector = "{\"selector\":{\"key\": {\"$regex\": \"video\"}}}";
-      let iter = await stub.getQueryResult(selector);
+      let queryString = {};
+        queryString.selector = {};
+        queryString.selector.docType = type;
+      let iter = await stub.getQueryResult( JSON.stringify(queryString));
       videos = await mycc.getAllResults(stub, iter, type);
     }
 
