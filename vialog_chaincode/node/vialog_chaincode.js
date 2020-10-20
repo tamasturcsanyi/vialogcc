@@ -98,7 +98,8 @@ class Chaincode {
       videos = await mycc.getAllResults(stub, iter, type);
     } else {
       let type = args[0];
-      let iter = await stub.getStateByPartialCompositeKey(type, null);
+      var selector = "{\"selector\":{\"key\": {\"$regex\": \"video\"}}}";
+      let iter = await stub.getQueryResult(selector);
       videos = await mycc.getAllResults(stub, iter, type);
     }
 
