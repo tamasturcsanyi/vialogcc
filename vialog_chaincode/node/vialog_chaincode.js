@@ -34,6 +34,7 @@ class Chaincode {
     }
     try {
       let payload = await method(stub, ret.params);
+      console.log("Payload return: ",payload);
       return shim.success(payload);
     } catch (err) {
       console.log(err);
@@ -103,7 +104,10 @@ class Chaincode {
 
     console.log('Query Response:');
     console.log(videos);
-    return videos;
+
+    let buffer = Buffer.from(JSON.stringify(videos));
+    console.log(buffer);
+    return buffer;
   }
 
   async assetExists(stub, id) {
