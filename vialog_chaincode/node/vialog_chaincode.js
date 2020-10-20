@@ -159,7 +159,7 @@ class Chaincode {
         videoHistory.push(videoHistoryItem.value);
       }
 
-      if (res.done) {
+      if (videoHistoryItem.done) {
         break;
       }
     }
