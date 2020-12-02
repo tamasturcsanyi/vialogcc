@@ -9,13 +9,11 @@ const shim = require('fabric-shim');
 const { Video } = require('./videoModeration');
 
 let video = new Video();
-let mycc;
 
-class Chaincode {
+let Chaincode = class {
 
   // Initialize the chaincode
   async Init(stub) {
-    mycc = new Chaincode();
 
     try {
         return shim.success();
@@ -33,7 +31,7 @@ class Chaincode {
       return shim.success();
     }
     try {
-      let payload = await method(stub, ret.params);
+      let payload = await method(stub, ret.params, this);
       console.log("Payload return: ",payload);
       return shim.success(payload);
     } catch (err) {
@@ -42,7 +40,7 @@ class Chaincode {
     }
   }
 
-  async addVideoEvent(stub, args) {
+  async addVideoEvent(stub, args, thisClass) {
     if (args.length != 18) {
       throw new Error('Incorrect number of arguments. Expecting 17');
     }
@@ -51,7 +49,9 @@ class Chaincode {
     console.log("VideoId");
     console.log(videoId);
     let newVideo = await video.create(type, videoId, eventName, video_token, replyTo, created, duration, videoResolution, label, threadId, position, views, moderatedBy, moderationDate, communityManagerNotes, rewards, video_state, video_type);
-    let id = mycc.getStateId(type,videoId);
+    const getStateId = thisClass['getStateId'];
+    let id = getStateId(type,videoId);
+
     console.log("Before ID");
     console.log(id);
     console.log(typeof id);
@@ -64,18 +64,20 @@ class Chaincode {
   }
 
   // query callback representing the query of a chaincode
-  async query(stub, args) {
+  async query(stub, args, thisClass) {
     let videos = [];
     console.log("Args: ",args); 
 
-    if (args.length == 2) {      
-      let id = mycc.getStateId(args[0],args[1]);
+    if (args.length == 2) {   
+      const getStateId = thisClass['getStateId'];   
+      let id = getStateId(args[0],args[1]);
 
       console.log("Single Id: ", id);
       console.log("Id type: ", typeof id); 
 
       // Get the state from the ledger
-      let history = await mycc.getHistoryForId(stub,id);      
+      const getHistoryForId = thisClass['getHistoryForId'];
+      let history = await getHistoryForId(stub,id);      
       console.log(history);
 
       let item = {
@@ -88,14 +90,17 @@ class Chaincode {
       videos.push(item);
     } else if (args.length == 3) {
       let type = args[0];
-      let startId = mycc.getStateId(type,args[1]);
+
+      const getStateId = thisClass['getStateId'];
+      let startId = getStateId(type,args[1]);
       console.log("Start Id: ", startId);
-      let endId = mycc.getStateId(type,args[2]);
+      let endId = getStateId(type,args[2]);
       console.log("End Id: ", endId);
 
       // Get the state from the ledger
       let iter = await stub.getStateByRange(startId,endId);
-      videos = await mycc.getAllResults(stub, iter, type);
+      const getAllResults = thisClass['getAllResults'];
+      videos = await getAllResults(stub, iter, type, thisClass);
     } else {
       let type = args[0];
       let queryString = {};
@@ -103,7 +108,7 @@ class Chaincode {
         queryString.selector.objType = type;
       console.log(queryString);
       let iter = await stub.getQueryResult(JSON.stringify(queryString));
-      videos = await mycc.getAllResults(stub, iter, type);
+      videos = await getAllResults(stub, iter, type, thisClass);
     }
 
     console.log('Query Response:');
@@ -119,7 +124,7 @@ class Chaincode {
     return (!!buffer && buffer.length > 0);
   }
 
-  async getAllResults(stub, iterator, type) {
+  async getAllResults(stub, iterator, type, thisClass) {
     let allResults = [];
     console.log("getAllResults Called.");
     while (true) {
@@ -127,9 +132,11 @@ class Chaincode {
       if (res && res.value) {
           
         if (type == 'video') {
-          let id = mycc.getStateId(type,JSON.parse(res.value.value.toString('utf8')).videoId);
+          const getStateId = thisClass['getStateId'];
+          let id = getStateId(type,JSON.parse(res.value.value.toString('utf8')).videoId);
           console.log("Id: ", id);
-          let history = await mycc.getHistoryForId(stub, id);
+          const getHistoryForId = thisClass['getHistoryForId'];
+          let history = await getHistoryForId(stub, id);
 
           let item = {
             VideoId: res.value.videoId,

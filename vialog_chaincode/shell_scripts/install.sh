@@ -2,7 +2,7 @@
 set -x #echo on
 
 CHAINCODE_NAME="vialog_dev_cc"
-CHAINCODE_VERSION="1.1"
+CHAINCODE_VERSION="1.0"
 CHAINCODE_SRC_CODE_PATH="/root/CLI/vialogcc/vialog_chaincode/node"
 
 export PEER_HOST=peer2
