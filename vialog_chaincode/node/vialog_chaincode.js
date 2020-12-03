@@ -108,6 +108,7 @@ let Chaincode = class {
         queryString.selector.objType = type;
       console.log(queryString);
       let iter = await stub.getQueryResult(JSON.stringify(queryString));
+      const getAllResults = thisClass['getAllResults'];
       videos = await getAllResults(stub, iter, type, thisClass);
     }
 
