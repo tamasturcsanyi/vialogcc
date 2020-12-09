@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x #echo on
 
-CHAINCODE_NAME="vialog_dev_cc"
+CHAINCODE_NAME="vialog_prod_cc"
 CHAINCODE_VERSION="1.0"
 CHAINCODE_SRC_CODE_PATH="/root/CLI/vialogcc/vialog_chaincode/node"
 
